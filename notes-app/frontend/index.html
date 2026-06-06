@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workshop Notes</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    header .logo {
+      font-size: 1.5rem;
+    }
+    header h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+    header span {
+      font-size: 0.75rem;
+      background: #0ea5e9;
+      color: #fff;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+      margin-left: auto;
+    }
+
+    /* ── Layout ── */
+    main {
+      max-width: 760px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ── Form ── */
+    .form-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .form-card h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.75rem;
+    }
+    .form-card input,
+    .form-card textarea {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: #f1f5f9;
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s;
+      margin-bottom: 0.75rem;
+    }
+    .form-card input:focus,
+    .form-card textarea:focus {
+      border-color: #0ea5e9;
+    }
+    .form-card input::placeholder,
+    .form-card textarea::placeholder {
+      color: #475569;
+    }
+    .form-card textarea {
+      height: 90px;
+      resize: none;
+      margin-bottom: 1rem;
+    }
+    .btn-add {
+      background: #0ea5e9;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.65rem 1.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-add:hover  { background: #0284c7; }
+    .btn-add:active { transform: scale(0.97); }
+
+    /* ── Notes list ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .section-header h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.75rem;
+    }
+    .count-badge {
+      background: #334155;
+      color: #94a3b8;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 999px;
+    }
+
+    #notes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .note-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .note-card:hover {
+      border-color: #475569;
+    }
+    .note-body { flex: 1; }
+    .note-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      margin-bottom: 0.35rem;
+    }
+    .note-content {
+      font-size: 0.875rem;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+    .note-time {
+      font-size: 0.72rem;
+      color: #475569;
+      margin-top: 0.6rem;
+    }
+    .btn-delete {
+      background: transparent;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      color: #64748b;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .btn-delete:hover {
+      background: #7f1d1d;
+      border-color: #ef4444;
+      color: #fca5a5;
+    }
+
+    /* ── Empty state ── */
+    .empty {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #475569;
+    }
+    .empty .icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .empty p { font-size: 0.9rem; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: #166534;
+      border: 1px solid #22c55e;
+      color: #dcfce7;
+      padding: 0.65rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all 0.2s;
+      pointer-events: none;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="logo">📝</span>
+  <h1>Workshop Notes</h1>
+  <span>Docker Workshop</span>
+</header>
+
+<main>
+  <!-- Form tambah catatan -->
+  <div class="form-card">
+    <h2>Catatan Baru</h2>
+    <input type="text" id="input-title" placeholder="Judul catatan..." maxlength="100" />
+    <textarea id="input-content" placeholder="Isi catatan (opsional)..."></textarea>
+    <button class="btn-add" onclick="addNote()">+ Tambah Catatan</button>
+  </div>
+
+  <!-- List catatan -->
+  <div class="section-header">
+    <h2>Semua Catatan</h2>
+    <span class="count-badge" id="count">0 catatan</span>
+  </div>
+  <div id="notes-list"></div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const API = "http://localhost:3001/api";
+
+  // ── Load semua catatan ────────────────────────────
+  async function loadNotes() {
+    try {
+      const res = await fetch(`${API}/notes`);
+      const notes = await res.json();
+      renderNotes(notes);
+    } catch {
+      renderError();
+    }
+  }
+
+  function renderNotes(notes) {
+    const list = document.getElementById("notes-list");
+    const count = document.getElementById("count");
+    count.textContent = `${notes.length} catatan`;
+
+    if (notes.length === 0) {
+      list.innerHTML = `
+        <div class="empty">
+          <div class="icon">📭</div>
+          <p>Belum ada catatan. Tambahkan yang pertama!</p>
+        </div>`;
+      return;
+    }
+
+    list.innerHTML = notes.map(note => `
+      <div class="note-card" id="note-${note.id}">
+        <div class="note-body">
+          <div class="note-title">${escHtml(note.title)}</div>
+          ${note.content ? `<div class="note-content">${escHtml(note.content)}</div>` : ""}
+          <div class="note-time">${formatDate(note.created_at)}</div>
+        </div>
+        <button class="btn-delete" onclick="deleteNote(${note.id})">Hapus</button>
+      </div>
+    `).join("");
+  }
+
+  function renderError() {
+    document.getElementById("notes-list").innerHTML = `
+      <div class="empty">
+        <div class="icon">⚠️</div>
+        <p>Tidak bisa konek ke backend.<br>Pastikan server sudah jalan.</p>
+      </div>`;
+  }
+
+  // ── Tambah catatan ────────────────────────────────
+  async function addNote() {
+    const title   = document.getElementById("input-title").value.trim();
+    const content = document.getElementById("input-content").value.trim();
+    if (!title) {
+      document.getElementById("input-title").focus();
+      return;
+    }
+    try {
+      await fetch(`${API}/notes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content }),
+      });
+      document.getElementById("input-title").value = "";
+      document.getElementById("input-content").value = "";
+      showToast("Catatan ditambahkan!");
+      loadNotes();
+    } catch {
+      showToast("Gagal menambahkan catatan.");
+    }
+  }
+
+  // ── Hapus catatan ─────────────────────────────────
+  async function deleteNote(id) {
+    try {
+      await fetch(`${API}/notes/${id}`, { method: "DELETE" });
+      showToast("Catatan dihapus.");
+      loadNotes();
+    } catch {
+      showToast("Gagal menghapus.");
+    }
+  }
+
+  // ── Enter to submit ───────────────────────────────
+  document.getElementById("input-title").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") addNote();
+  });
+
+  // ── Helpers ───────────────────────────────────────
+  function escHtml(str) {
+    return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+  function formatDate(iso) {
+    return new Date(iso).toLocaleString("id-ID", {
+      day: "numeric", month: "short", year: "numeric",
+      hour: "2-digit", minute: "2-digit"
+    });
+  }
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2500);
+  }
+
+  loadNotes();
+</script>
+</body>
+</html>
