@@ -1,6 +1,5 @@
 services:
 
-  # ── Database ──────────────────────────────────────
   db:
     image: postgres:16-alpine
     container_name: notes-db
@@ -16,9 +15,10 @@ services:
       timeout: 5s
       retries: 10
 
-  # ── Backend ───────────────────────────────────────
   backend:
-    build: ./backend
+    # Pakai image yang sudah di-push ke Docker Hub
+    # Format: username/nama-image:tag
+    image: haechanlovelove/notes-backend:v1
     container_name: notes-backend
     ports:
       - "3001:3001"
@@ -32,9 +32,9 @@ services:
       db:
         condition: service_healthy
 
-  # ── Frontend ──────────────────────────────────────
   frontend:
-    build: ./frontend
+    # Pakai image yang sudah di push ke Docker Hub
+    image: haechanlovelove/notes-frontend:v1
     container_name: notes-frontend
     ports:
       - "8080:80"
